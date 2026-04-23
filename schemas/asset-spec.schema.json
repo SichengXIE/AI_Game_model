@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-game-mod-studio.local/schemas/asset-spec.schema.json",
+  "title": "AI Game Mod Studio Asset Spec",
+  "type": "object",
+  "required": [
+    "spec_version",
+    "game",
+    "asset_type",
+    "title",
+    "style",
+    "footprint",
+    "modules",
+    "connections",
+    "decor",
+    "runtime_constraints"
+  ],
+  "properties": {
+    "spec_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "game": {
+      "type": "string",
+      "const": "cities_skylines_2"
+    },
+    "asset_type": {
+      "type": "string",
+      "enum": ["train_station"]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "style": {
+      "type": "object",
+      "required": ["theme", "regional_inspiration", "materials"],
+      "properties": {
+        "theme": { "type": "string" },
+        "regional_inspiration": { "type": "string" },
+        "materials": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "footprint": {
+      "type": "object",
+      "required": ["width", "length", "height_class"],
+      "properties": {
+        "width": { "type": "integer", "minimum": 1 },
+        "length": { "type": "integer", "minimum": 1 },
+        "height_class": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "modules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["module_id", "count"],
+        "properties": {
+          "module_id": {
+            "type": "string",
+            "enum": [
+              "station.platform.island.small",
+              "station.platform.island.medium",
+              "station.platform.side.small",
+              "station.concourse.basic",
+              "station.concourse.glass_hall",
+              "station.entrance.single",
+              "station.entrance.corner",
+              "station.decor.canopy",
+              "station.decor.signage"
+            ]
+          },
+          "count": { "type": "integer", "minimum": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "connections": {
+      "type": "object",
+      "required": ["rail_tracks", "road_access", "pedestrian_entries"],
+      "properties": {
+        "rail_tracks": { "type": "integer", "minimum": 1 },
+        "road_access": { "type": "integer", "minimum": 0 },
+        "pedestrian_entries": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "decor": {
+      "type": "object",
+      "required": ["sign_language", "color_palette"],
+      "properties": {
+        "sign_language": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "color_palette": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "runtime_constraints": {
+      "type": "object",
+      "required": ["template_only", "requires_base_mod", "base_mod_min_version"],
+      "properties": {
+        "template_only": { "type": "boolean", "const": true },
+        "requires_base_mod": { "type": "boolean", "const": true },
+        "base_mod_min_version": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

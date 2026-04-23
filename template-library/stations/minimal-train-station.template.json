@@ -1,0 +1,50 @@
+{
+  "template_id": "station.template.minimal_train_station.v0",
+  "asset_type": "train_station",
+  "description": "MVP modular train station template for validating Asset Spec runtime loading.",
+  "modules": [
+    {
+      "module_id": "station.platform.island.small",
+      "display_name": "Small island platform",
+      "track_capacity": 2
+    },
+    {
+      "module_id": "station.platform.island.medium",
+      "display_name": "Medium island platform",
+      "track_capacity": 2
+    },
+    {
+      "module_id": "station.platform.side.small",
+      "display_name": "Small side platform",
+      "track_capacity": 1
+    },
+    {
+      "module_id": "station.concourse.basic",
+      "display_name": "Basic concourse"
+    },
+    {
+      "module_id": "station.concourse.glass_hall",
+      "display_name": "Glass hall concourse"
+    },
+    {
+      "module_id": "station.entrance.single",
+      "display_name": "Single entrance"
+    },
+    {
+      "module_id": "station.entrance.corner",
+      "display_name": "Corner entrance"
+    },
+    {
+      "module_id": "station.decor.canopy",
+      "display_name": "Platform canopy"
+    },
+    {
+      "module_id": "station.decor.signage",
+      "display_name": "Bilingual signage"
+    }
+  ],
+  "runtime_notes": [
+    "Module IDs are stable identifiers for the AI planner and Base Mod runtime.",
+    "Actual CS2 prefab bindings are intentionally deferred until the official mod template project is created."
+  ]
+}

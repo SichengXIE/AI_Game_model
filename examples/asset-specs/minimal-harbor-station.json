@@ -1,0 +1,48 @@
+{
+  "spec_version": "0.1",
+  "game": "cities_skylines_2",
+  "asset_type": "train_station",
+  "title": "Modern Harbor Station",
+  "style": {
+    "theme": "modern_transit",
+    "regional_inspiration": "hong_kong",
+    "materials": ["glass", "steel", "concrete"]
+  },
+  "footprint": {
+    "width": 64,
+    "length": 128,
+    "height_class": "midrise"
+  },
+  "modules": [
+    {
+      "module_id": "station.platform.island.medium",
+      "count": 2
+    },
+    {
+      "module_id": "station.concourse.glass_hall",
+      "count": 1
+    },
+    {
+      "module_id": "station.entrance.corner",
+      "count": 2
+    },
+    {
+      "module_id": "station.decor.signage",
+      "count": 1
+    }
+  ],
+  "connections": {
+    "rail_tracks": 4,
+    "road_access": 2,
+    "pedestrian_entries": 3
+  },
+  "decor": {
+    "sign_language": ["zh-HK", "en"],
+    "color_palette": ["#C8102E", "#E6E6E6", "#333333"]
+  },
+  "runtime_constraints": {
+    "template_only": true,
+    "requires_base_mod": true,
+    "base_mod_min_version": "0.1.0"
+  }
+}
