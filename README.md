@@ -22,5 +22,6 @@ The initial target is `Cities: Skylines II`, with the product direction focused 
 
 - `docs/cs2-mod-mvp-plan.md`
 - `docs/cs2-placeable-mod-revision.md`
+- `docs/asset-spec-v0.1.md`
 - `docs/base-mod-validation-plan.md`
 - `docs/hk-server-deployment-guide.md`

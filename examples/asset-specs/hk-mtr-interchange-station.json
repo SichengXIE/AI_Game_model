@@ -1,0 +1,137 @@
+{
+  "spec_version": "0.1",
+  "game": "cities_skylines_2",
+  "asset_type": "train_station",
+  "subtype": "interchange_station",
+  "title": "Harbor MTR-Style Interchange",
+  "description": "A compact Hong Kong-inspired interchange station with island platforms, a glass concourse, bilingual wayfinding, and dense urban entrances.",
+  "metadata": {
+    "asset_id": "hk-mtr-style-interchange",
+    "author": "AI Game Mod Studio",
+    "tags": ["hong-kong", "mtr-inspired", "interchange", "modern-transit"]
+  },
+  "source_intent": {
+    "user_prompt": "我想做一个港铁风格的换乘站，有两个岛式站台、玻璃大厅、双语标识和红白灰配色。",
+    "design_priority": "balanced",
+    "must_have": ["two island platforms", "glass concourse", "bilingual signage", "red white gray palette"],
+    "avoid": ["official MTR logo", "oversized footprint", "unsupported custom mesh generation"]
+  },
+  "style": {
+    "theme": "modern_transit",
+    "regional_inspiration": "hong_kong",
+    "architectural_language": ["dense urban station", "glass concourse", "clear wayfinding", "compact entrances"],
+    "materials": ["glass", "steel", "concrete", "painted_metal"],
+    "lighting": "bright_platforms",
+    "reference_notes": ["MTR-inspired station clarity", "fictional branding only", "red accent bands"]
+  },
+  "footprint": {
+    "width": 72,
+    "length": 144,
+    "unit": "meters",
+    "grid_size": 8,
+    "height_class": "midrise",
+    "orientation": "track_parallel",
+    "platform_length_class": "medium"
+  },
+  "modules": [
+    {
+      "module_id": "station.platform.island.medium",
+      "count": 2,
+      "role": "platform",
+      "placement": {
+        "zone": "track_core",
+        "priority": 100
+      },
+      "parameters": {
+        "canopy": true,
+        "platform_edge_color": "#C8102E"
+      }
+    },
+    {
+      "module_id": "station.concourse.glass_hall",
+      "count": 1,
+      "role": "concourse",
+      "placement": {
+        "zone": "concourse_center",
+        "priority": 90
+      },
+      "parameters": {
+        "roof_style": "glass_barrel",
+        "ticket_hall": true
+      }
+    },
+    {
+      "module_id": "station.entrance.corner",
+      "count": 3,
+      "role": "entrance",
+      "placement": {
+        "zone": "street_edge",
+        "priority": 80
+      },
+      "parameters": {
+        "entrance_type": "urban_corner",
+        "covered": true
+      }
+    },
+    {
+      "module_id": "station.decor.canopy",
+      "count": 2,
+      "role": "decor",
+      "placement": {
+        "zone": "roofline",
+        "priority": 55
+      },
+      "parameters": {
+        "material": "painted_metal"
+      }
+    },
+    {
+      "module_id": "station.decor.signage",
+      "count": 2,
+      "role": "decor",
+      "placement": {
+        "zone": "street_edge",
+        "priority": 85
+      },
+      "parameters": {
+        "signage_density": "high",
+        "wayfinding_color": "#C8102E"
+      }
+    }
+  ],
+  "connections": {
+    "rail_tracks": 4,
+    "road_access": 2,
+    "pedestrian_entries": 4,
+    "transit_modes": ["train", "metro", "bus", "pedestrian"],
+    "road_access_type": "local_street",
+    "pedestrian_network": "mixed"
+  },
+  "decor": {
+    "sign_language": ["zh-HK", "en"],
+    "color_palette": ["#C8102E", "#E6E6E6", "#333333", "#FFFFFF"],
+    "signage_style": "mtr_inspired",
+    "logo_policy": "fictional_only",
+    "surface_patterns": ["platform_stripes", "glass_mullions", "painted_panels"]
+  },
+  "preview_hints": {
+    "camera_angle": "isometric",
+    "show_connection_points": true,
+    "show_module_labels": true
+  },
+  "compatibility": {
+    "requires_new_save": false,
+    "requires_asset_editor_import": false,
+    "known_limits": [
+      "MVP runtime uses template modules instead of custom meshes.",
+      "Real-world logos are not included."
+    ]
+  },
+  "runtime_constraints": {
+    "template_only": true,
+    "requires_base_mod": true,
+    "base_mod_min_version": "0.1.0",
+    "allowed_runtime": "cs2_base_mod",
+    "max_module_instances": 64
+  }
+}
