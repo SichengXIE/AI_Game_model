@@ -62,6 +62,27 @@ dotnet run --project base-mod/src/AiGameModStudio.SpecProbe -- --data-dir /tmp/a
 7. 将示例配置复制为运行时读取路径下的 `active-asset.json`
 8. 启动游戏并查看日志
 
+自动生成官方模板集成项目：
+
+```powershell
+base-mod\tools\Install-CS2OfficialTemplate.ps1 `
+  -RepoRoot E:\vscode\code\AI_Game_model `
+  -GamePath "E:\SteamLibrary\steamapps\common\Cities Skylines II" `
+  -Force `
+  -Build
+```
+
+如果官方工具链尚未在游戏内完成初始化，可先运行 compile-only 预检：
+
+```powershell
+base-mod\tools\Install-CS2OfficialTemplate.ps1 `
+  -RepoRoot E:\vscode\code\AI_Game_model `
+  -GamePath "E:\SteamLibrary\steamapps\common\Cities Skylines II" `
+  -Force `
+  -Build `
+  -CompileOnly
+```
+
 运行时默认读取路径：
 
 ```text

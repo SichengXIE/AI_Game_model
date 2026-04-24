@@ -13,6 +13,27 @@ Integration steps:
 5. Define the `CITIES_SKYLINES_2` compilation symbol in that project.
 6. Build through the official template so CS2 post-processing and deployment steps run.
 
+Or use the repository integration script after the official toolchain is installed:
+
+```powershell
+base-mod\tools\Install-CS2OfficialTemplate.ps1 `
+  -RepoRoot E:\vscode\code\AI_Game_model `
+  -GamePath "E:\SteamLibrary\steamapps\common\Cities Skylines II" `
+  -Force `
+  -Build
+```
+
+If the in-game toolchain has not initialized Unity Entities source generators yet, run a compile-only precheck:
+
+```powershell
+base-mod\tools\Install-CS2OfficialTemplate.ps1 `
+  -RepoRoot E:\vscode\code\AI_Game_model `
+  -GamePath "E:\SteamLibrary\steamapps\common\Cities Skylines II" `
+  -Force `
+  -Build `
+  -CompileOnly
+```
+
 The first in-game test is successful when the game log shows that `active-asset.json` was found, validated, and converted into a station runtime plan.
 
 ## Runtime Data Folder
@@ -32,3 +53,13 @@ Runtime files:
 ## Hot Reload
 
 `AssetSpecRuntimeSystem` starts a `FileSystemWatcher` for `active-asset.json` and also polls every five seconds as a fallback. Replacing, creating, deleting, or editing the file triggers a reload. The current implementation stops at runtime-plan creation; the next step is mapping a loaded `StationRuntimePlan` into CS2 ECS/PrefabSystem objects.
+
+## ECS / PrefabSystem Binding
+
+`Cs2StationPrefabBinder` is the first binding seam. It receives a validated `StationRuntimePlan` after initial load or hot reload and has access to:
+
+1. `Game.Prefabs.PrefabSystem`
+2. `Unity.Entities.EntityManager`
+3. runtime module positions, colors, names, footprint, and connection metadata
+
+The current implementation logs binding candidates only. The next implementation pass should resolve stable station template prefabs, duplicate or instantiate them, then write transform/color/material component data through ECS.

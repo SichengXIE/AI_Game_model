@@ -47,6 +47,8 @@ Implemented:
 6. Runtime status log and latest status snapshot.
 7. File watcher plus polling fallback for hot reload.
 8. CS2 runtime adapter wired to the shared Core runtime service.
+9. Official CS2 code-mod template integration script.
+10. Initial `PrefabSystem` / `EntityManager` binding seam that logs runtime-plan binding candidates.
 
 Acceptance criteria:
 
@@ -58,10 +60,11 @@ Acceptance criteria:
 
 Next implementation tasks:
 
-1. Copy `AiGameModStudio.CS2Runtime` into an official CS2 code-mod template and verify the watcher in game.
-2. Add an in-game status UI or options panel that reads `runtime-status.json`.
-3. Replace the runtime-plan placeholder with real ECS/PrefabSystem integration after testing inside the official mod template.
-4. Add failure-mode fixtures for missing modules, invalid anchors, and unsupported assembly components.
+1. Run the integration script on a machine where the in-game toolchain has initialized Unity Entities source generators.
+2. Verify in game that watcher events and `runtime-status.json` update after replacing `active-asset.json`.
+3. Add an in-game status UI or options panel that reads `runtime-status.json`.
+4. Replace the binding candidate logger with real ECS/PrefabSystem prefab resolution and entity writes.
+5. Add failure-mode fixtures for missing modules, invalid anchors, and unsupported assembly components.
 
 ## Stage 3: Asset Pipeline Alignment
 

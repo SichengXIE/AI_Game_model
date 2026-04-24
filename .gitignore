@@ -29,6 +29,9 @@ tmp/
 artifacts/
 exports/
 
+# Generated CS2 official template integrations
+base-mod/generated/
+
 # .NET
 bin/
 obj/

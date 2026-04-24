@@ -2,6 +2,7 @@
 using System;
 using AiGameModStudio.BaseMod.Core;
 using Game;
+using Game.Prefabs;
 
 namespace AiGameModStudio.CS2Runtime;
 
@@ -10,6 +11,7 @@ public partial class AssetSpecRuntimeSystem : GameSystemBase
     private static readonly TimeSpan PollInterval = TimeSpan.FromSeconds(5);
     private ActiveAssetHotReloadWatcher? _hotReloadWatcher;
     private ActiveAssetRuntimeService? _runtimeService;
+    private Cs2StationPrefabBinder? _prefabBinder;
     private DateTime _lastPollAtUtc = DateTime.MinValue;
 
     protected override void OnCreate()
@@ -19,6 +21,9 @@ public partial class AssetSpecRuntimeSystem : GameSystemBase
         var fileSink = new FileRuntimeStatusSink(options);
         var statusSink = new GameRuntimeStatusSink(fileSink);
         _runtimeService = new ActiveAssetRuntimeService(options, statusSink);
+        _prefabBinder = new Cs2StationPrefabBinder(
+            World.GetOrCreateSystemManaged<PrefabSystem>(),
+            EntityManager);
         _hotReloadWatcher = new ActiveAssetHotReloadWatcher(_runtimeService);
         _hotReloadWatcher.Reloaded += snapshot =>
         {
@@ -26,10 +31,19 @@ public partial class AssetSpecRuntimeSystem : GameSystemBase
             {
                 Mod.Log.Info($"Asset Spec hot reload finished with state {snapshot.State}.");
             }
+
+            if (snapshot.RuntimePlan is not null)
+            {
+                _prefabBinder?.PrepareBinding(snapshot.RuntimePlan);
+            }
         };
 
         Mod.Log.Info($"Asset Spec runtime system created. Data directory: {options.DataDirectory}");
-        _hotReloadWatcher.Start(loadImmediately: true);
+        var initialSnapshot = _hotReloadWatcher.Start(loadImmediately: true);
+        if (initialSnapshot.RuntimePlan is not null)
+        {
+            _prefabBinder.PrepareBinding(initialSnapshot.RuntimePlan);
+        }
     }
 
     protected override void OnUpdate()
