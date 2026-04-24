@@ -28,3 +28,17 @@ The initial target is `Cities: Skylines II`, with the product direction focused 
 - `docs/backend-api-v0.1.md`
 - `docs/base-mod-validation-plan.md`
 - `docs/hk-server-deployment-guide.md`
+
+## Run Web MVP
+
+```bash
+python backend/api/server.py
+```
+
+Open `http://127.0.0.1:8000` and use the web interface to run:
+
+```text
+prompt -> /api/specs/generate -> /api/packages/build -> zip download
+```
+
+Set the provider API key expected by the selected model provider before generating specs, for example `DASHSCOPE_API_KEY` for `qwen-hk`.

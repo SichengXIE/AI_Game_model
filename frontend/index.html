@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Game Mod Studio MVP</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <div class="eyebrow">Cities: Skylines II Base Mod Workflow</div>
+        <h1>一句话生成可打包的车站资产蓝图</h1>
+        <p>
+          输入自然语言需求，后端会生成 Asset Spec，再打包成 Base Mod 可读取的资产包。
+          当前 MVP 聚焦模板化车站，不直接生成官方 DLL 或裸 3D 网格。
+        </p>
+      </section>
+
+      <section class="workspace" aria-label="生成工作台">
+        <form id="generate-form" class="composer">
+          <label for="prompt">需求描述</label>
+          <textarea
+            id="prompt"
+            name="prompt"
+            rows="6"
+            placeholder="例如：生成一个港铁风格的换乘站，有玻璃大厅、两座岛式站台、红白灰配色和双语标识。"
+            required
+          ></textarea>
+
+          <div class="quick-prompts" aria-label="快速示例">
+            <button type="button" data-prompt="生成一个现代风格的火车站，带玻璃大厅、两座岛式站台和清晰的英文标识。">
+              现代火车站
+            </button>
+            <button type="button" data-prompt="我想做一个港铁风格的换乘站，有两座岛式站台、红白灰配色、双语标识和城市街角入口。">
+              港铁风格换乘站
+            </button>
+            <button type="button" data-prompt="生成一个紧凑型郊区车站，占地小、入口少、适合低密度住宅区。">
+              紧凑郊区站
+            </button>
+          </div>
+
+          <div class="provider-grid">
+            <label>
+              模型提供商
+              <select id="provider-id" name="provider_id">
+                <option value="qwen-hk">Qwen DashScope Hong Kong</option>
+              </select>
+            </label>
+            <label>
+              模型名称
+              <input id="model" name="model" value="qwen-plus-latest" />
+            </label>
+          </div>
+
+          <button id="generate-button" class="primary-action" type="submit">
+            生成 Asset Spec 并打包
+          </button>
+        </form>
+
+        <aside class="status-panel">
+          <div class="status-card">
+            <span class="status-label">当前状态</span>
+            <strong id="status-title">等待输入</strong>
+            <p id="status-detail">填写需求后开始生成。需要在后端配置对应模型的 API Key 环境变量。</p>
+          </div>
+
+          <a id="download-link" class="download-link disabled" href="#" download aria-disabled="true">
+            下载资产包
+          </a>
+
+          <div class="package-meta">
+            <span>Package</span>
+            <code id="package-id">尚未生成</code>
+          </div>
+        </aside>
+      </section>
+
+      <section class="results">
+        <article>
+          <h2>设计说明</h2>
+          <p id="design-explanation">生成完成后显示 AI 的设计说明。</p>
+        </article>
+
+        <article>
+          <h2>模板选择理由</h2>
+          <ul id="template-rationale">
+            <li>等待生成结果。</li>
+          </ul>
+        </article>
+
+        <article class="wide">
+          <h2>Asset Spec</h2>
+          <pre id="asset-spec-output">{}</pre>
+        </article>
+
+        <article class="wide">
+          <h2>构建输出</h2>
+          <pre id="package-output">{}</pre>
+        </article>
+      </section>
+    </main>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
