@@ -11,15 +11,17 @@ REPO_ROOT = BACKEND_DIR.parent
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
+from api.package_build import PackageBuildService
 from api.spec_generation import ApiError, SpecGenerationService
 
 
-def create_service() -> SpecGenerationService:
+def create_spec_service() -> SpecGenerationService:
     return SpecGenerationService(schema_path=REPO_ROOT / "schemas" / "asset-spec.schema.json")
 
 
 class ApiHandler(BaseHTTPRequestHandler):
-    service = create_service()
+    spec_service = create_spec_service()
+    package_service = PackageBuildService()
 
     def do_GET(self) -> None:
         if self.path == "/health":
@@ -28,13 +30,20 @@ class ApiHandler(BaseHTTPRequestHandler):
         self._send_json(404, {"error": {"code": "not_found", "message": "Route not found."}})
 
     def do_POST(self) -> None:
-        if self.path != "/api/specs/generate":
-            self._send_json(404, {"error": {"code": "not_found", "message": "Route not found."}})
+        if self.path == "/api/specs/generate":
+            self._handle_specs_generate()
             return
 
+        if self.path == "/api/packages/build":
+            self._handle_packages_build()
+            return
+
+        self._send_json(404, {"error": {"code": "not_found", "message": "Route not found."}})
+
+    def _handle_specs_generate(self) -> None:
         try:
             payload = self._read_json_body()
-            response = self.service.generate(payload)
+            response = self.spec_service.generate(payload)
             self._send_json(200, response)
         except ApiError as error:
             self._send_json(
@@ -45,6 +54,22 @@ class ApiHandler(BaseHTTPRequestHandler):
             self._send_json(
                 502,
                 {"error": {"code": "provider_error", "message": str(error)}},
+            )
+        except json.JSONDecodeError:
+            self._send_json(
+                400,
+                {"error": {"code": "invalid_json", "message": "Request body must be valid JSON."}},
+            )
+
+    def _handle_packages_build(self) -> None:
+        try:
+            payload = self._read_json_body()
+            response = self.package_service.build(payload)
+            self._send_json(200, response)
+        except ApiError as error:
+            self._send_json(
+                error.status_code,
+                {"error": {"code": error.code, "message": error.message}},
             )
         except json.JSONDecodeError:
             self._send_json(

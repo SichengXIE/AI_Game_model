@@ -91,3 +91,45 @@ The `assembly` object references reusable 3D template components, not raw genera
 4. `collision` and `lod` describe how the package builder should create runtime-friendly geometry
 
 This is the contract that lets the backend assemble a metro station shell before game-specific code binds transport behavior.
+
+## Build Package
+
+```http
+POST /api/packages/build
+Content-Type: application/json
+```
+
+Request:
+
+```json
+{
+  "asset_spec": {}
+}
+```
+
+Response:
+
+```json
+{
+  "status": "ready",
+  "package_id": "hk-mtr-style-interchange-abc123def0",
+  "filename": "hk-mtr-style-interchange-abc123def0.zip",
+  "content_type": "application/zip",
+  "encoding": "base64",
+  "zip_base64": "...",
+  "manifest": {},
+  "preview": {},
+  "files": []
+}
+```
+
+The zip contains:
+
+```text
+active-asset.json
+manifest.json
+preview.json
+README.md
+```
+
+`active-asset.json` is the file the CS2 Base Mod should read. `manifest.json` is for package tracking, `preview.json` is for frontend display, and `README.md` is for user instructions.
