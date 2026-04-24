@@ -63,6 +63,9 @@
         "$ref": "#/$defs/module"
       }
     },
+    "assembly": {
+      "$ref": "#/$defs/assembly"
+    },
     "connections": {
       "$ref": "#/$defs/connections"
     },
@@ -265,6 +268,233 @@
           "type": "integer",
           "minimum": 0,
           "maximum": 100
+        }
+      },
+      "additionalProperties": false
+    },
+    "assembly": {
+      "type": "object",
+      "required": ["coordinate_system", "components", "anchors"],
+      "properties": {
+        "coordinate_system": {
+          "type": "object",
+          "required": ["unit", "origin", "axes"],
+          "properties": {
+            "unit": {
+              "type": "string",
+              "const": "meters"
+            },
+            "origin": {
+              "type": "string",
+              "enum": ["asset_center", "front_left_corner", "track_centerline"]
+            },
+            "axes": {
+              "type": "string",
+              "const": "x_right_y_up_z_forward"
+            }
+          },
+          "additionalProperties": false
+        },
+        "components": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {
+            "$ref": "#/$defs/assembly_component"
+          }
+        },
+        "anchors": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "items": {
+            "$ref": "#/$defs/assembly_anchor"
+          }
+        },
+        "collision": {
+          "$ref": "#/$defs/collision_plan"
+        },
+        "lod": {
+          "$ref": "#/$defs/lod_plan"
+        }
+      },
+      "additionalProperties": false
+    },
+    "assembly_component": {
+      "type": "object",
+      "required": ["component_id", "instance_id", "purpose", "transform", "dimensions"],
+      "properties": {
+        "component_id": {
+          "type": "string",
+          "enum": [
+            "shell.facade.glass_grid",
+            "shell.facade.concrete_core",
+            "shell.facade.painted_metal_band",
+            "roof.glass_canopy",
+            "roof.steel_ribs",
+            "entrance.urban_corner_shell",
+            "platform.canopy.steel",
+            "signage.lightbox_bilingual",
+            "connector.pedestrian_bridge",
+            "connector.metro_subsurface_stub"
+          ]
+        },
+        "instance_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]{2,79}$"
+        },
+        "purpose": {
+          "type": "string",
+          "enum": ["facade", "roof", "entrance", "platform_cover", "signage", "connector", "collision", "lod_proxy"]
+        },
+        "attach_to": {
+          "type": "string"
+        },
+        "transform": {
+          "$ref": "#/$defs/transform"
+        },
+        "dimensions": {
+          "$ref": "#/$defs/dimensions"
+        },
+        "material_overrides": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "facade": {
+          "$ref": "#/$defs/facade_plan"
+        }
+      },
+      "additionalProperties": false
+    },
+    "transform": {
+      "type": "object",
+      "required": ["position", "rotation_degrees", "scale"],
+      "properties": {
+        "position": {
+          "$ref": "#/$defs/vector3"
+        },
+        "rotation_degrees": {
+          "type": "number",
+          "minimum": -360,
+          "maximum": 360
+        },
+        "scale": {
+          "$ref": "#/$defs/vector3"
+        }
+      },
+      "additionalProperties": false
+    },
+    "vector3": {
+      "type": "object",
+      "required": ["x", "y", "z"],
+      "properties": {
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "z": { "type": "number" }
+      },
+      "additionalProperties": false
+    },
+    "dimensions": {
+      "type": "object",
+      "required": ["width", "height", "depth"],
+      "properties": {
+        "width": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "height": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "depth": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "facade_plan": {
+      "type": "object",
+      "required": ["side", "rhythm", "transparency", "accent_color"],
+      "properties": {
+        "side": {
+          "type": "string",
+          "enum": ["front", "back", "left", "right", "platform", "roof"]
+        },
+        "rhythm": {
+          "type": "string",
+          "enum": ["regular_grid", "wide_bays", "vertical_fins", "solid_base_glass_top"]
+        },
+        "transparency": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "accent_color": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        },
+        "signage_band": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "assembly_anchor": {
+      "type": "object",
+      "required": ["anchor_id", "type", "position", "direction_degrees"],
+      "properties": {
+        "anchor_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]{2,79}$"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["rail_track", "road_access", "pedestrian_entry", "metro_transfer", "bus_stop", "service_access"]
+        },
+        "position": {
+          "$ref": "#/$defs/vector3"
+        },
+        "direction_degrees": {
+          "type": "number",
+          "minimum": -360,
+          "maximum": 360
+        },
+        "connects_to": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "collision_plan": {
+      "type": "object",
+      "required": ["strategy"],
+      "properties": {
+        "strategy": {
+          "type": "string",
+          "enum": ["bounding_box", "component_boxes", "none"]
+        },
+        "clearance_height": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "lod_plan": {
+      "type": "object",
+      "required": ["strategy"],
+      "properties": {
+        "strategy": {
+          "type": "string",
+          "enum": ["inherit_template", "generate_simple_proxy"]
+        },
+        "max_triangles": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 20000
         }
       },
       "additionalProperties": false

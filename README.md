@@ -25,5 +25,6 @@ The initial target is `Cities: Skylines II`, with the product direction focused 
 - `docs/asset-spec-v0.1.md`
 - `docs/model-provider-interface-v0.1.md`
 - `docs/ai-orchestrator-v0.1.md`
+- `docs/backend-api-v0.1.md`
 - `docs/base-mod-validation-plan.md`
 - `docs/hk-server-deployment-guide.md`

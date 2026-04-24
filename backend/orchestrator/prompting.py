@@ -19,6 +19,19 @@ KNOWN_MODULES = [
     "station.decor.signage",
 ]
 
+KNOWN_ASSEMBLY_COMPONENTS = [
+    "shell.facade.glass_grid",
+    "shell.facade.concrete_core",
+    "shell.facade.painted_metal_band",
+    "roof.glass_canopy",
+    "roof.steel_ribs",
+    "entrance.urban_corner_shell",
+    "platform.canopy.steel",
+    "signage.lightbox_bilingual",
+    "connector.pedestrian_bridge",
+    "connector.metro_subsurface_stub",
+]
+
 
 ORCHESTRATOR_RESPONSE_SHAPE = {
     "status": "ready | needs_clarification",
@@ -48,6 +61,7 @@ def build_orchestrator_request(
         "user_constraints": dict(user_constraints or {}),
         "existing_answers": dict(existing_answers or {}),
         "known_modules": KNOWN_MODULES,
+        "known_assembly_components": KNOWN_ASSEMBLY_COMPONENTS,
         "asset_spec_schema": schema,
         "required_response_shape": ORCHESTRATOR_RESPONSE_SHAPE,
     }
@@ -64,7 +78,12 @@ def build_orchestrator_request(
                     "Your job is to turn a user's natural-language request into "
                     "an Asset Spec v0.1 for a Cities: Skylines II train station. "
                     "Choose only known module IDs. Use fictional branding for "
-                    "real-world inspired designs. If the request lacks enough "
+                    "real-world inspired designs. Include an assembly object "
+                    "when the user asks for a buildable station shell, facade, "
+                    "3D layout, or game-ready placement. The assembly object "
+                    "must describe template components, transforms, dimensions, "
+                    "facades, and connection anchors instead of inventing meshes. "
+                    "If the request lacks enough "
                     "information to make a playable station, ask at most three "
                     "clarifying questions. Return only JSON, no Markdown."
                 ),

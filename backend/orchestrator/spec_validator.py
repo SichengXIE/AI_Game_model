@@ -4,7 +4,7 @@ import re
 from typing import Any, Mapping
 
 from .contracts import ValidationIssue
-from .prompting import KNOWN_MODULES
+from .prompting import KNOWN_ASSEMBLY_COMPONENTS, KNOWN_MODULES
 
 
 HEX_COLOR = re.compile(r"^#[0-9a-fA-F]{6}$")
@@ -39,6 +39,13 @@ def validate_asset_spec_contract(spec: Mapping[str, Any]) -> tuple[ValidationIss
         _validate_modules(modules, issues)
     else:
         issues.append(ValidationIssue("missing_modules", "modules must be a non-empty list.", "$.modules"))
+
+    assembly = spec.get("assembly")
+    if assembly is not None:
+        if isinstance(assembly, Mapping):
+            _validate_assembly(assembly, issues)
+        else:
+            issues.append(ValidationIssue("invalid_assembly", "assembly must be an object.", "$.assembly"))
 
     connections = spec.get("connections")
     if isinstance(connections, Mapping):
@@ -94,6 +101,44 @@ def _validate_modules(modules: list[Any], issues: list[ValidationIssue]) -> None
 
     _expect(has_platform, issues, "missing_platform", "At least one platform module is required.", "$.modules")
     _expect(has_entrance, issues, "missing_entrance", "At least one entrance module is required.", "$.modules")
+
+
+def _validate_assembly(assembly: Mapping[str, Any], issues: list[ValidationIssue]) -> None:
+    components = assembly.get("components")
+    anchors = assembly.get("anchors")
+
+    if not isinstance(components, list) or not components:
+        issues.append(ValidationIssue("missing_assembly_components", "assembly.components must be a non-empty list.", "$.assembly.components"))
+    else:
+        for index, component in enumerate(components):
+            path = f"$.assembly.components[{index}]"
+            if not isinstance(component, Mapping):
+                issues.append(ValidationIssue("invalid_assembly_component", "assembly component must be an object.", path))
+                continue
+            component_id = component.get("component_id")
+            if component_id not in KNOWN_ASSEMBLY_COMPONENTS:
+                issues.append(ValidationIssue("unknown_component_id", f"Unknown component_id: {component_id}", f"{path}.component_id"))
+            if not isinstance(component.get("instance_id"), str) or not component.get("instance_id"):
+                issues.append(ValidationIssue("missing_component_instance_id", "assembly component instance_id is required.", f"{path}.instance_id"))
+            if not isinstance(component.get("transform"), Mapping):
+                issues.append(ValidationIssue("missing_component_transform", "assembly component transform is required.", f"{path}.transform"))
+            if not isinstance(component.get("dimensions"), Mapping):
+                issues.append(ValidationIssue("missing_component_dimensions", "assembly component dimensions are required.", f"{path}.dimensions"))
+
+    if not isinstance(anchors, list) or not anchors:
+        issues.append(ValidationIssue("missing_assembly_anchors", "assembly.anchors must be a non-empty list.", "$.assembly.anchors"))
+    else:
+        for index, anchor in enumerate(anchors):
+            path = f"$.assembly.anchors[{index}]"
+            if not isinstance(anchor, Mapping):
+                issues.append(ValidationIssue("invalid_assembly_anchor", "assembly anchor must be an object.", path))
+                continue
+            if not isinstance(anchor.get("anchor_id"), str) or not anchor.get("anchor_id"):
+                issues.append(ValidationIssue("missing_anchor_id", "assembly anchor_id is required.", f"{path}.anchor_id"))
+            if anchor.get("type") not in {"rail_track", "road_access", "pedestrian_entry", "metro_transfer", "bus_stop", "service_access"}:
+                issues.append(ValidationIssue("invalid_anchor_type", "assembly anchor type is invalid.", f"{path}.type"))
+            if not isinstance(anchor.get("position"), Mapping):
+                issues.append(ValidationIssue("missing_anchor_position", "assembly anchor position is required.", f"{path}.position"))
 
 
 def _expect(condition: bool, issues: list[ValidationIssue], code: str, message: str, path: str) -> None:

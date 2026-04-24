@@ -68,14 +68,15 @@ v0.1 分为两层字段：
 11. `modules[].variant`
 12. `modules[].placement`
 13. `modules[].parameters`
-14. `connections.transit_modes`
-15. `connections.road_access_type`
-16. `connections.pedestrian_network`
-17. `decor.signage_style`
-18. `decor.logo_policy`
-19. `decor.surface_patterns`
-20. `preview_hints`
-21. `compatibility`
+14. `assembly`
+15. `connections.transit_modes`
+16. `connections.road_access_type`
+17. `connections.pedestrian_network`
+18. `decor.signage_style`
+19. `decor.logo_policy`
+20. `decor.surface_patterns`
+21. `preview_hints`
+22. `compatibility`
 
 ## 3. Required Contract
 
@@ -176,7 +177,61 @@ Each module must include:
 
 Optional fields such as `role`, `placement`, and `parameters` help the template matcher and future runtime place modules more intelligently.
 
-## 8. Connections
+## 8. Assembly
+
+`assembly` describes how a station shell can be assembled from reusable 3D template components. This is the bridge between natural language and buildable geometry.
+
+AI must not invent arbitrary mesh data in v0.1. It should reference known component IDs and provide transforms, dimensions, facade treatment, and connection anchors:
+
+```json
+{
+  "assembly": {
+    "coordinate_system": {
+      "unit": "meters",
+      "origin": "asset_center",
+      "axes": "x_right_y_up_z_forward"
+    },
+    "components": [
+      {
+        "component_id": "shell.facade.glass_grid",
+        "instance_id": "front-glass-grid",
+        "purpose": "facade",
+        "transform": {
+          "position": { "x": 0, "y": 6, "z": -66 },
+          "rotation_degrees": 0,
+          "scale": { "x": 1, "y": 1, "z": 1 }
+        },
+        "dimensions": { "width": 64, "height": 12, "depth": 1.2 },
+        "facade": {
+          "side": "front",
+          "rhythm": "regular_grid",
+          "transparency": 0.72,
+          "accent_color": "#C8102E",
+          "signage_band": true
+        }
+      }
+    ],
+    "anchors": [
+      {
+        "anchor_id": "ped-entry-main",
+        "type": "pedestrian_entry",
+        "position": { "x": 0, "y": 0, "z": -72 },
+        "direction_degrees": 180
+      }
+    ]
+  }
+}
+```
+
+The intended pipeline is:
+
+1. AI generates `assembly`
+2. Backend validates component IDs and anchors
+3. Package builder resolves components from `template-library`
+4. Base Mod or an editor pipeline instantiates shell, facade, collision, and connection anchors
+5. Game-specific code binds transport function to the anchors
+
+## 9. Connections
 
 `connections` gives both a simple numeric summary and optional semantic hints.
 
@@ -192,7 +247,7 @@ Future runtime and preview systems may also use:
 2. `road_access_type`
 3. `pedestrian_network`
 
-## 9. Decor
+## 10. Decor
 
 `decor` defines sign languages, colors, and surface treatment.
 
@@ -210,7 +265,7 @@ For Hong Kong-inspired stations, use fictional signs and palettes unless the use
 }
 ```
 
-## 10. Runtime Constraints
+## 11. Runtime Constraints
 
 v0.1 must remain template-based:
 
@@ -228,7 +283,7 @@ v0.1 must remain template-based:
 
 The validator should reject specs that require arbitrary C# generation, direct DLL output, or unsupported prefab creation.
 
-## 11. AI Output Rules
+## 12. AI Output Rules
 
 When the AI receives a user request, it should:
 
@@ -241,9 +296,10 @@ When the AI receives a user request, it should:
 7. Include at least one entrance module
 8. Use `decor.logo_policy: fictional_only` for real-world inspired assets
 9. Put uncertainty into `source_intent.avoid` or `compatibility.known_limits`
-10. Never invent module IDs
+10. Include `assembly` when the user expects a buildable 3D shell or facade
+11. Never invent module IDs or component IDs
 
-## 12. Example User Mapping
+## 13. Example User Mapping
 
 User says:
 

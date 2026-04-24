@@ -99,6 +99,196 @@
       }
     }
   ],
+  "assembly": {
+    "coordinate_system": {
+      "unit": "meters",
+      "origin": "asset_center",
+      "axes": "x_right_y_up_z_forward"
+    },
+    "components": [
+      {
+        "component_id": "shell.facade.glass_grid",
+        "instance_id": "front-glass-grid",
+        "purpose": "facade",
+        "attach_to": "station.concourse.glass_hall",
+        "transform": {
+          "position": { "x": 0, "y": 7, "z": -66 },
+          "rotation_degrees": 0,
+          "scale": { "x": 1, "y": 1, "z": 1 }
+        },
+        "dimensions": {
+          "width": 64,
+          "height": 14,
+          "depth": 1.2
+        },
+        "material_overrides": {
+          "frame": "painted_metal",
+          "glass": "clear_glass"
+        },
+        "facade": {
+          "side": "front",
+          "rhythm": "regular_grid",
+          "transparency": 0.72,
+          "accent_color": "#C8102E",
+          "signage_band": true
+        }
+      },
+      {
+        "component_id": "shell.facade.painted_metal_band",
+        "instance_id": "red-wayfinding-band",
+        "purpose": "signage",
+        "attach_to": "station.concourse.glass_hall",
+        "transform": {
+          "position": { "x": 0, "y": 12.5, "z": -66.7 },
+          "rotation_degrees": 0,
+          "scale": { "x": 1, "y": 1, "z": 1 }
+        },
+        "dimensions": {
+          "width": 60,
+          "height": 1.4,
+          "depth": 0.35
+        },
+        "material_overrides": {
+          "paint": "#C8102E"
+        },
+        "facade": {
+          "side": "front",
+          "rhythm": "wide_bays",
+          "transparency": 0,
+          "accent_color": "#C8102E",
+          "signage_band": true
+        }
+      },
+      {
+        "component_id": "roof.glass_canopy",
+        "instance_id": "main-glass-canopy",
+        "purpose": "roof",
+        "attach_to": "station.concourse.glass_hall",
+        "transform": {
+          "position": { "x": 0, "y": 15.5, "z": -30 },
+          "rotation_degrees": 0,
+          "scale": { "x": 1, "y": 1, "z": 1 }
+        },
+        "dimensions": {
+          "width": 68,
+          "height": 3,
+          "depth": 42
+        },
+        "material_overrides": {
+          "roof": "clear_glass",
+          "ribs": "steel"
+        }
+      },
+      {
+        "component_id": "entrance.urban_corner_shell",
+        "instance_id": "street-corner-entry-a",
+        "purpose": "entrance",
+        "attach_to": "station.entrance.corner",
+        "transform": {
+          "position": { "x": -24, "y": 3, "z": -72 },
+          "rotation_degrees": 180,
+          "scale": { "x": 1, "y": 1, "z": 1 }
+        },
+        "dimensions": {
+          "width": 12,
+          "height": 6,
+          "depth": 8
+        },
+        "material_overrides": {
+          "shell": "concrete",
+          "trim": "#C8102E"
+        }
+      },
+      {
+        "component_id": "signage.lightbox_bilingual",
+        "instance_id": "front-bilingual-lightbox",
+        "purpose": "signage",
+        "attach_to": "station.decor.signage",
+        "transform": {
+          "position": { "x": 0, "y": 13.5, "z": -67.2 },
+          "rotation_degrees": 0,
+          "scale": { "x": 1, "y": 1, "z": 1 }
+        },
+        "dimensions": {
+          "width": 18,
+          "height": 1.8,
+          "depth": 0.45
+        },
+        "material_overrides": {
+          "background": "#FFFFFF",
+          "accent": "#C8102E"
+        }
+      },
+      {
+        "component_id": "connector.metro_subsurface_stub",
+        "instance_id": "metro-transfer-stub",
+        "purpose": "connector",
+        "transform": {
+          "position": { "x": 18, "y": -2, "z": -20 },
+          "rotation_degrees": 90,
+          "scale": { "x": 1, "y": 1, "z": 1 }
+        },
+        "dimensions": {
+          "width": 8,
+          "height": 4,
+          "depth": 18
+        },
+        "material_overrides": {
+          "tunnel": "concrete"
+        }
+      }
+    ],
+    "anchors": [
+      {
+        "anchor_id": "rail-track-1",
+        "type": "rail_track",
+        "position": { "x": -9, "y": 0, "z": 0 },
+        "direction_degrees": 0,
+        "connects_to": "station.platform.island.medium#1"
+      },
+      {
+        "anchor_id": "rail-track-2",
+        "type": "rail_track",
+        "position": { "x": 9, "y": 0, "z": 0 },
+        "direction_degrees": 0,
+        "connects_to": "station.platform.island.medium#2"
+      },
+      {
+        "anchor_id": "ped-entry-main",
+        "type": "pedestrian_entry",
+        "position": { "x": 0, "y": 0, "z": -74 },
+        "direction_degrees": 180,
+        "connects_to": "station.entrance.corner#1"
+      },
+      {
+        "anchor_id": "metro-transfer-east",
+        "type": "metro_transfer",
+        "position": { "x": 22, "y": -2, "z": -20 },
+        "direction_degrees": 90,
+        "connects_to": "metro-transfer-stub"
+      },
+      {
+        "anchor_id": "bus-stop-front",
+        "type": "bus_stop",
+        "position": { "x": -30, "y": 0, "z": -78 },
+        "direction_degrees": 180
+      },
+      {
+        "anchor_id": "road-access-service",
+        "type": "road_access",
+        "position": { "x": 34, "y": 0, "z": -64 },
+        "direction_degrees": 90
+      }
+    ],
+    "collision": {
+      "strategy": "component_boxes",
+      "clearance_height": 5.5
+    },
+    "lod": {
+      "strategy": "generate_simple_proxy",
+      "max_triangles": 6000
+    }
+  },
   "connections": {
     "rail_tracks": 4,
     "road_access": 2,

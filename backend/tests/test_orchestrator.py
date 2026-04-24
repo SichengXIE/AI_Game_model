@@ -39,6 +39,7 @@ class AssetSpecOrchestratorTests(unittest.TestCase):
         prompt_context = json.loads(request.messages[1].content)
         self.assertIn("asset_spec_schema", prompt_context)
         self.assertIn("station.concourse.glass_hall", prompt_context["known_modules"])
+        self.assertIn("shell.facade.glass_grid", prompt_context["known_assembly_components"])
 
     def test_ready_response_returns_valid_asset_spec(self):
         asset_spec = json.loads(
@@ -138,6 +139,36 @@ class AssetSpecOrchestratorTests(unittest.TestCase):
         codes = {issue.code for issue in result.validation_issues}
         self.assertIn("missing_platform", codes)
         self.assertIn("missing_entrance", codes)
+
+    def test_invalid_assembly_component_reports_validation_issue(self):
+        asset_spec = json.loads(
+            (ROOT / "examples" / "asset-specs" / "hk-mtr-interchange-station.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        asset_spec["assembly"]["components"][0]["component_id"] = "unknown.mesh.generated"
+        content = json.dumps(
+            {
+                "status": "ready",
+                "questions": [],
+                "asset_spec": asset_spec,
+                "design_explanation": "",
+                "template_rationale": [],
+            },
+            ensure_ascii=False,
+        )
+        orchestrator = AssetSpecOrchestrator(
+            schema_path=ROOT / "schemas" / "asset-spec.schema.json",
+            client=FakeClient(content),
+        )
+
+        result = orchestrator.run(OrchestrationRequest(user_prompt="bad assembly"))
+
+        self.assertEqual(result.status, "invalid")
+        self.assertIn(
+            "unknown_component_id",
+            {issue.code for issue in result.validation_issues},
+        )
 
 
 if __name__ == "__main__":
