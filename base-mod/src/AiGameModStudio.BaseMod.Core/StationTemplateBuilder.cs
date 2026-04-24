@@ -52,17 +52,17 @@ public sealed class StationTemplateBuilder
     {
         var centeredIndex = ordinal - ((totalCount - 1) / 2.0);
 
-        if (moduleId.Contains(".platform.", StringComparison.OrdinalIgnoreCase))
+        if (ContainsIgnoreCase(moduleId, ".platform."))
         {
             return new RuntimePosition { X = centeredIndex * 12, Y = 0, Z = 0 };
         }
 
-        if (moduleId.Contains(".concourse.", StringComparison.OrdinalIgnoreCase))
+        if (ContainsIgnoreCase(moduleId, ".concourse."))
         {
             return new RuntimePosition { X = 0, Y = 0, Z = -footprint.Length * 0.18 };
         }
 
-        if (moduleId.Contains(".entrance.", StringComparison.OrdinalIgnoreCase))
+        if (ContainsIgnoreCase(moduleId, ".entrance."))
         {
             return new RuntimePosition { X = centeredIndex * 10, Y = 0, Z = -footprint.Length * 0.42 };
         }
@@ -72,7 +72,7 @@ public sealed class StationTemplateBuilder
 
     private static int ComputeRotation(string moduleId)
     {
-        if (moduleId.Contains(".entrance.", StringComparison.OrdinalIgnoreCase))
+        if (ContainsIgnoreCase(moduleId, ".entrance."))
         {
             return 180;
         }
@@ -89,7 +89,7 @@ public sealed class StationTemplateBuilder
             ["height_class"] = string.IsNullOrWhiteSpace(spec.Footprint.HeightClass) ? "lowrise" : spec.Footprint.HeightClass
         };
 
-        if (moduleId.Contains(".signage.", StringComparison.OrdinalIgnoreCase))
+        if (ContainsIgnoreCase(moduleId, ".signage."))
         {
             parameters["sign_language"] = string.Join(",", spec.Decor.SignLanguage.DefaultIfEmpty("en"));
         }
@@ -111,11 +111,16 @@ public sealed class StationTemplateBuilder
             .ToArray();
 
         var slug = new string(chars);
-        while (slug.Contains("--", StringComparison.Ordinal))
+        while (slug.Contains("--"))
         {
-            slug = slug.Replace("--", "-", StringComparison.Ordinal);
+            slug = slug.Replace("--", "-");
         }
 
         return string.IsNullOrWhiteSpace(slug) ? "untitled-station" : slug.Trim('-');
+    }
+
+    private static bool ContainsIgnoreCase(string value, string match)
+    {
+        return value.IndexOf(match, StringComparison.OrdinalIgnoreCase) >= 0;
     }
 }

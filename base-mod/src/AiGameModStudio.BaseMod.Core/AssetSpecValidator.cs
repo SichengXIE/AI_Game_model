@@ -125,12 +125,12 @@ public sealed class AssetSpecValidator
             }
         }
 
-        if (!spec.Modules.Any(module => module.ModuleId.Contains(".platform.", StringComparison.OrdinalIgnoreCase)))
+        if (!spec.Modules.Any(module => ContainsIgnoreCase(module.ModuleId, ".platform.")))
         {
             report.Error("missing_platform", "A train station requires at least one platform module.", "$.modules");
         }
 
-        if (!spec.Modules.Any(module => module.ModuleId.Contains(".entrance.", StringComparison.OrdinalIgnoreCase)))
+        if (!spec.Modules.Any(module => ContainsIgnoreCase(module.ModuleId, ".entrance.")))
         {
             report.Error("missing_entrance", "A placeable station requires at least one entrance module.", "$.modules");
         }
@@ -154,8 +154,8 @@ public sealed class AssetSpecValidator
         }
 
         var trackCapacity = spec.Modules
-            .Where(module => module.ModuleId.Contains(".platform.", StringComparison.OrdinalIgnoreCase))
-            .Sum(module => module.ModuleId.Contains(".island.", StringComparison.OrdinalIgnoreCase) ? module.Count * 2 : module.Count);
+            .Where(module => ContainsIgnoreCase(module.ModuleId, ".platform."))
+            .Sum(module => ContainsIgnoreCase(module.ModuleId, ".island.") ? module.Count * 2 : module.Count);
 
         if (trackCapacity > 0 && spec.Connections.RailTracks > trackCapacity)
         {
@@ -191,5 +191,10 @@ public sealed class AssetSpecValidator
         {
             report.Error("base_mod_required", "requires_base_mod must be true for this runtime.", "$.runtime_constraints.requires_base_mod");
         }
+    }
+
+    private static bool ContainsIgnoreCase(string value, string match)
+    {
+        return value.IndexOf(match, StringComparison.OrdinalIgnoreCase) >= 0;
     }
 }
