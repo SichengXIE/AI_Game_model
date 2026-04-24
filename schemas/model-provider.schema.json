@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-game-mod-studio.local/schemas/model-provider.schema.json",
+  "title": "AI Game Mod Studio Model Provider Config v0.1",
+  "description": "User-selectable model provider configuration for OpenAI-compatible chat completions endpoints.",
+  "type": "object",
+  "required": ["schema_version", "default_provider_id", "providers"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "default_provider_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "providers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/provider"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "provider": {
+      "type": "object",
+      "required": [
+        "id",
+        "display_name",
+        "api_style",
+        "base_url",
+        "api_key_env",
+        "default_model",
+        "enabled"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]{1,63}$"
+        },
+        "display_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "api_style": {
+          "type": "string",
+          "const": "openai_chat_completions"
+        },
+        "base_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "api_key_env": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]{1,79}$"
+        },
+        "default_model": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "supports_json_schema": {
+          "type": "boolean"
+        },
+        "supports_streaming": {
+          "type": "boolean"
+        },
+        "timeout_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 300
+        },
+        "extra_headers": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "extra_body": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "notes": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "string",
+            "maxLength": 200
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
