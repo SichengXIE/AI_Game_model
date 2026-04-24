@@ -10,6 +10,15 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+function Invoke-DotnetChecked {
+    param([string[]] $Arguments)
+
+    & dotnet @Arguments
+    if ($LASTEXITCODE -ne 0) {
+        throw "dotnet $($Arguments -join ' ') failed with exit code $LASTEXITCODE"
+    }
+}
+
 if (-not $OutputDir) {
     $OutputDir = Join-Path $RepoRoot "artifacts\cs2-official-template\$ModName"
 }
@@ -54,10 +63,10 @@ New-Item -ItemType Directory -Path $localModsPath -Force | Out-Null
 
 $installedTemplates = dotnet new list csiimod 2>$null | Out-String
 if ($installedTemplates -notmatch "csiimod") {
-    dotnet new install $templatePackage | Out-Host
+    Invoke-DotnetChecked -Arguments @("new", "install", $templatePackage)
 }
 
-dotnet new csiimod -n $ModName -o $OutputDir | Out-Host
+Invoke-DotnetChecked -Arguments @("new", "csiimod", "-n", $ModName, "-o", $OutputDir)
 
 Copy-Item (Join-Path $runtimeSource "*.cs") $OutputDir -Force
 
@@ -116,5 +125,5 @@ if ($Build) {
         $buildArgs += "/p:ModPublisherCommand=Update"
     }
 
-    dotnet build @buildArgs
+    Invoke-DotnetChecked -Arguments (@("build") + $buildArgs)
 }
