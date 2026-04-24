@@ -28,3 +28,7 @@ build/
 tmp/
 artifacts/
 exports/
+
+# .NET
+bin/
+obj/
