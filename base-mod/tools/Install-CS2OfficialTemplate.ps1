@@ -52,7 +52,11 @@ New-Item -ItemType Directory -Path $localModsPath -Force | Out-Null
 [Environment]::SetEnvironmentVariable("CSII_USERDATAPATH", $userDataPath, "User")
 [Environment]::SetEnvironmentVariable("CSII_LOCALMODSPATH", $localModsPath, "User")
 
-dotnet new install $templatePackage | Out-Host
+$installedTemplates = dotnet new list csiimod 2>$null | Out-String
+if ($installedTemplates -notmatch "csiimod") {
+    dotnet new install $templatePackage | Out-Host
+}
+
 dotnet new csiimod -n $ModName -o $OutputDir | Out-Host
 
 Copy-Item (Join-Path $runtimeSource "*.cs") $OutputDir -Force

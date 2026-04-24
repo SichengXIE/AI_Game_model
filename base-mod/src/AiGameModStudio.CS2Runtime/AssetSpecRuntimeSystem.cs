@@ -1,4 +1,5 @@
 #if CITIES_SKYLINES_2
+#nullable enable
 using System;
 using AiGameModStudio.BaseMod.Core;
 using Game;
@@ -95,4 +96,5 @@ namespace AiGameModStudio.CS2Runtime
         }
     }
 }
+#nullable restore
 #endif

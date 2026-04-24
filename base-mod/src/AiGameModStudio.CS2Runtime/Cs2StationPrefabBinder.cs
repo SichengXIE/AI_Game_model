@@ -1,4 +1,5 @@
 #if CITIES_SKYLINES_2
+#nullable enable
 using AiGameModStudio.BaseMod.Core;
 using Game.Prefabs;
 using Unity.Entities;
@@ -39,4 +40,5 @@ namespace AiGameModStudio.CS2Runtime
         }
     }
 }
+#nullable restore
 #endif

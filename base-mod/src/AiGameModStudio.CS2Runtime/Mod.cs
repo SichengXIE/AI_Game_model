@@ -1,4 +1,5 @@
 #if CITIES_SKYLINES_2
+#nullable enable
 using Colossal.Logging;
 using Game;
 using Game.Modding;
@@ -24,4 +25,5 @@ namespace AiGameModStudio.CS2Runtime
         }
     }
 }
+#nullable restore
 #endif
