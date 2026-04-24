@@ -13,13 +13,15 @@ class ProviderCatalogServiceTests(unittest.TestCase):
         response = ProviderCatalogService().list()
 
         provider_ids = {provider["id"] for provider in response["providers"]}
-        self.assertEqual(response["default_provider_id"], "qwen-hk")
+        self.assertEqual(response["default_provider_id"], "local-demo")
+        self.assertIn("local-demo", provider_ids)
         self.assertIn("qwen-hk", provider_ids)
         self.assertIn("openai", provider_ids)
 
         for provider in response["providers"]:
             self.assertIn("default_model", provider)
             self.assertIn("api_key_env", provider)
+            self.assertIn("requires_api_key", provider)
             self.assertNotIn("base_url", provider)
 
 

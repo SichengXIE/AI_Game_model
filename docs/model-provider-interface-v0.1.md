@@ -20,6 +20,8 @@ This covers OpenAI-compatible chat completions endpoints from:
 
 The internal product contract stays the same: provider output must be parsed and validated as `Asset Spec v0.1`.
 
+v0.1 also includes `local-demo`, a deterministic built-in provider for Web MVP demos and regression tests. It does not call an external model and should not be used as a replacement for real user-selected providers.
+
 ## 2. Configuration
 
 Provider configuration is defined by:
@@ -67,6 +69,16 @@ Optional fields:
 6. `notes`
 
 ## 4. Default Providers
+
+### Local Demo
+
+`local-demo` is the default provider for the first Web MVP because it lets the full browser flow run without API keys:
+
+```text
+prompt -> local template response -> Asset Spec validation -> Package Builder -> zip download
+```
+
+The provider returns a valid station Asset Spec based on the repository example and applies small deterministic variants for modern, compact/suburban, and airport-like prompts.
 
 ### Gemini
 

@@ -9,8 +9,24 @@ from .contracts import ProviderConfig
 
 DEFAULT_PROVIDER_CONFIG: dict[str, Any] = {
     "schema_version": "0.1",
-    "default_provider_id": "qwen-hk",
+    "default_provider_id": "local-demo",
     "providers": [
+        {
+            "id": "local-demo",
+            "display_name": "Local Demo",
+            "api_style": "openai_chat_completions",
+            "base_url": "http://localhost/local-demo",
+            "api_key_env": "LOCAL_DEMO_API_KEY",
+            "default_model": "template-demo-v0.1",
+            "enabled": True,
+            "supports_json_schema": True,
+            "supports_streaming": False,
+            "timeout_seconds": 1,
+            "notes": [
+                "Deterministic built-in provider for local Web MVP demos.",
+                "Does not call an external model or require an API key.",
+            ],
+        },
         {
             "id": "openai",
             "display_name": "OpenAI",

@@ -44,12 +44,12 @@
             <label>
               模型提供商
               <select id="provider-id" name="provider_id">
-                <option value="qwen-hk">Qwen DashScope Hong Kong</option>
+                <option value="local-demo">Local Demo</option>
               </select>
             </label>
             <label>
               模型名称
-              <input id="model" name="model" value="qwen-plus-latest" />
+              <input id="model" name="model" value="template-demo-v0.1" />
             </label>
           </div>
 
@@ -62,7 +62,7 @@
           <div class="status-card">
             <span class="status-label">当前状态</span>
             <strong id="status-title">等待输入</strong>
-            <p id="status-detail">填写需求后开始生成。需要在后端配置对应模型的 API Key 环境变量。</p>
+            <p id="status-detail">填写需求后开始生成。Local Demo 不需要 API Key，真实模型需要配置对应环境变量。</p>
           </div>
 
           <a id="download-link" class="download-link disabled" href="#" download aria-disabled="true">

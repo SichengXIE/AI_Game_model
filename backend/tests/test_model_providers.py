@@ -16,6 +16,8 @@ class ModelProviderTests(unittest.TestCase):
         catalog = load_provider_catalog()
         providers = {provider.id for provider in catalog.list_enabled()}
 
+        self.assertEqual(catalog.default_provider_id, "local-demo")
+        self.assertIn("local-demo", providers)
         self.assertIn("gemini", providers)
         self.assertIn("qwen-hk", providers)
         self.assertIn("doubao-ark", providers)
@@ -64,7 +66,8 @@ class ModelProviderTests(unittest.TestCase):
         config = json.loads(config_path.read_text(encoding="utf-8"))
 
         self.assertEqual(config["schema_version"], "0.1")
-        self.assertGreaterEqual(len(config["providers"]), 4)
+        self.assertEqual(config["default_provider_id"], "local-demo")
+        self.assertGreaterEqual(len(config["providers"]), 5)
 
     def test_missing_api_key_fails_before_network_call(self):
         provider = ProviderConfig(

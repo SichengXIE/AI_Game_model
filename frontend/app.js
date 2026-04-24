@@ -43,7 +43,7 @@ async function loadProviders() {
 
     providerSelect.value = data.default_provider_id;
     syncDefaultModel();
-    setStatus("等待输入", "模型提供商已载入。后端需要配置对应 API Key 环境变量。");
+    setStatus("等待输入", "模型提供商已载入。Local Demo 可直接跑通闭环，真实模型需要配置对应 API Key。");
   } catch (error) {
     setStatus("后端未连接", `无法读取 /api/providers：${error.message}`);
   }

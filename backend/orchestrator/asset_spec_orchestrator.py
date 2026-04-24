@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Optional, Protocol, Union
 
-from model_providers import OpenAICompatibleClient, load_provider_catalog
+from model_providers import DEMO_PROVIDER_ID, LocalDemoAssetSpecClient, OpenAICompatibleClient, load_provider_catalog
 from model_providers.contracts import ChatRequest, ChatResponse
 
 from .contracts import OrchestrationRequest, OrchestrationResult
@@ -63,6 +63,12 @@ class AssetSpecOrchestrator:
         return result
 
     @staticmethod
-    def _build_client(provider_id: Optional[str]) -> OpenAICompatibleClient:
+    def _build_client(provider_id: Optional[str]) -> ChatClient:
+        if provider_id == DEMO_PROVIDER_ID:
+            return LocalDemoAssetSpecClient()
+
         provider = load_provider_catalog().get(provider_id)
+        if provider.id == DEMO_PROVIDER_ID:
+            return LocalDemoAssetSpecClient()
+
         return OpenAICompatibleClient(provider)

@@ -26,6 +26,7 @@ The initial target is `Cities: Skylines II`, with the product direction focused 
 - `docs/model-provider-interface-v0.1.md`
 - `docs/ai-orchestrator-v0.1.md`
 - `docs/backend-api-v0.1.md`
+- `docs/mvp-stage-roadmap.md`
 - `docs/base-mod-validation-plan.md`
 - `docs/hk-server-deployment-guide.md`
 
@@ -41,4 +42,4 @@ Open `http://127.0.0.1:8000` and use the web interface to run:
 prompt -> /api/specs/generate -> /api/packages/build -> zip download
 ```
 
-Set the provider API key expected by the selected model provider before generating specs, for example `DASHSCOPE_API_KEY` for `qwen-hk`.
+The default `local-demo` provider runs without an API key and is intended for local MVP demos. Set the provider API key expected by a real model provider before generating specs, for example `DASHSCOPE_API_KEY` for `qwen-hk`.
