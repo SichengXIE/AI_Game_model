@@ -35,7 +35,7 @@ Next implementation tasks:
 
 ## Stage 2: CS2 Base Mod Runtime
 
-Status: validation core exists, game integration still needs real CS2 bindings.
+Status: external data folder, runtime status files, and hot reload core exist; real CS2 ECS/PrefabSystem binding still needs an official mod-template integration pass.
 
 Implemented:
 
@@ -43,7 +43,10 @@ Implemented:
 2. C# Asset Spec loader and validator.
 3. C# station runtime plan builder.
 4. SpecProbe command-line validation project.
-5. CS2 runtime project placeholder.
+5. External `active-asset.json` data directory contract.
+6. Runtime status log and latest status snapshot.
+7. File watcher plus polling fallback for hot reload.
+8. CS2 runtime adapter wired to the shared Core runtime service.
 
 Acceptance criteria:
 
@@ -55,9 +58,9 @@ Acceptance criteria:
 
 Next implementation tasks:
 
-1. Define the exact Base Mod data folder layout and file watcher behavior.
-2. Implement an in-game log/report surface for loaded package status.
-3. Replace the current CS2 runtime placeholders with real ECS/PrefabSystem integration after testing inside the official mod template.
+1. Copy `AiGameModStudio.CS2Runtime` into an official CS2 code-mod template and verify the watcher in game.
+2. Add an in-game status UI or options panel that reads `runtime-status.json`.
+3. Replace the runtime-plan placeholder with real ECS/PrefabSystem integration after testing inside the official mod template.
 4. Add failure-mode fixtures for missing modules, invalid anchors, and unsupported assembly components.
 
 ## Stage 3: Asset Pipeline Alignment

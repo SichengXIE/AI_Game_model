@@ -1,6 +1,5 @@
 #if CITIES_SKYLINES_2
 using System;
-using System.IO;
 using AiGameModStudio.BaseMod.Core;
 using Game;
 
@@ -8,70 +7,77 @@ namespace AiGameModStudio.CS2Runtime;
 
 public partial class AssetSpecRuntimeSystem : GameSystemBase
 {
-    private const string SpecFileName = "active-asset.json";
-    private DateTime _lastLoadedAtUtc = DateTime.MinValue;
+    private static readonly TimeSpan PollInterval = TimeSpan.FromSeconds(5);
+    private ActiveAssetHotReloadWatcher? _hotReloadWatcher;
+    private ActiveAssetRuntimeService? _runtimeService;
+    private DateTime _lastPollAtUtc = DateTime.MinValue;
 
     protected override void OnCreate()
     {
         base.OnCreate();
-        Mod.Log.Info("Asset Spec runtime system created.");
-        TryLoadActiveSpec();
+        var options = new ActiveAssetSourceOptions();
+        var fileSink = new FileRuntimeStatusSink(options);
+        var statusSink = new GameRuntimeStatusSink(fileSink);
+        _runtimeService = new ActiveAssetRuntimeService(options, statusSink);
+        _hotReloadWatcher = new ActiveAssetHotReloadWatcher(_runtimeService);
+        _hotReloadWatcher.Reloaded += snapshot =>
+        {
+            if (snapshot.State != ActiveAssetRuntimeState.Unchanged)
+            {
+                Mod.Log.Info($"Asset Spec hot reload finished with state {snapshot.State}.");
+            }
+        };
+
+        Mod.Log.Info($"Asset Spec runtime system created. Data directory: {options.DataDirectory}");
+        _hotReloadWatcher.Start(loadImmediately: true);
     }
 
     protected override void OnUpdate()
     {
-        // MVP: poll occasionally during development. Replace with a file watcher or explicit UI action later.
-        if ((DateTime.UtcNow - _lastLoadedAtUtc).TotalSeconds < 10)
+        if (_hotReloadWatcher is null || (DateTime.UtcNow - _lastPollAtUtc) < PollInterval)
         {
             return;
         }
 
-        TryLoadActiveSpec();
+        _lastPollAtUtc = DateTime.UtcNow;
+        _hotReloadWatcher.Poll();
     }
 
-    private void TryLoadActiveSpec()
+    protected override void OnDestroy()
     {
-        _lastLoadedAtUtc = DateTime.UtcNow;
-
-        try
-        {
-            var specPath = GetSpecPath();
-            if (!File.Exists(specPath))
-            {
-                Mod.Log.Info($"No active Asset Spec found at {specPath}.");
-                return;
-            }
-
-            var spec = AssetSpecLoader.LoadFromFile(specPath);
-            var report = new AssetSpecValidator().Validate(spec);
-
-            foreach (var issue in report.Issues)
-            {
-                Mod.Log.Info($"{issue.Severity}: {issue.Code} at {issue.Path}: {issue.Message}");
-            }
-
-            if (report.HasErrors)
-            {
-                Mod.Log.Error("Asset Spec has validation errors; skipping runtime plan.");
-                return;
-            }
-
-            var plan = new StationTemplateBuilder().Build(spec);
-            Mod.Log.Info($"Loaded Asset Spec '{plan.DisplayName}' with {plan.ModuleInstances.Count} module instances.");
-
-            // TODO: Map RuntimeModuleInstance values to CS2 prefabs/components once the official template project
-            // exposes the correct prefab references and instantiation API.
-        }
-        catch (Exception exception)
-        {
-            Mod.Log.Error($"Failed to load active Asset Spec: {exception}");
-        }
+        _hotReloadWatcher?.Dispose();
+        Mod.Log.Info("Asset Spec runtime system destroyed.");
+        base.OnDestroy();
     }
 
-    private static string GetSpecPath()
+    private sealed class GameRuntimeStatusSink : IRuntimeStatusSink
     {
-        var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        return Path.Combine(localAppData, "Colossal Order", "Cities Skylines II", "ModsData", "AiGameModStudio", SpecFileName);
+        private readonly IRuntimeStatusSink _innerSink;
+
+        public GameRuntimeStatusSink(IRuntimeStatusSink innerSink)
+        {
+            _innerSink = innerSink;
+        }
+
+        public void Write(RuntimeStatusEntry entry)
+        {
+            _innerSink.Write(entry);
+
+            var message = $"{entry.Code}: {entry.Message}";
+            if (entry.Level == RuntimeStatusLevel.Error)
+            {
+                Mod.Log.Error(message);
+            }
+            else
+            {
+                Mod.Log.Info(message);
+            }
+        }
+
+        public void WriteSnapshot(ActiveAssetRuntimeSnapshot snapshot)
+        {
+            _innerSink.WriteSnapshot(snapshot);
+        }
     }
 }
 #endif

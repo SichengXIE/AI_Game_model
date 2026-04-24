@@ -1,9 +1,38 @@
 using System.Text.Json;
 using AiGameModStudio.BaseMod.Core;
 
+if (args.Length == 1 && args[0] == "--default-data-dir")
+{
+    Console.WriteLine(ActiveAssetSourceOptions.GetDefaultDataDirectory());
+    return 0;
+}
+
+if (args.Length == 2 && args[0] == "--data-dir")
+{
+    var options = new ActiveAssetSourceOptions
+    {
+        DataDirectory = Path.GetFullPath(args[1])
+    };
+    var service = new ActiveAssetRuntimeService(options, new FileRuntimeStatusSink(options));
+    var snapshot = service.LoadActiveAsset(force: true);
+    Console.WriteLine(JsonSerializer.Serialize(snapshot, JsonOptions.Default));
+
+    return snapshot.State switch
+    {
+        ActiveAssetRuntimeState.Loaded => 0,
+        ActiveAssetRuntimeState.Missing => 65,
+        ActiveAssetRuntimeState.Invalid => 66,
+        ActiveAssetRuntimeState.Failed => 67,
+        _ => 68
+    };
+}
+
 if (args.Length != 1)
 {
-    Console.Error.WriteLine("Usage: dotnet run --project base-mod/src/AiGameModStudio.SpecProbe -- <asset-spec.json>");
+    Console.Error.WriteLine("Usage:");
+    Console.Error.WriteLine("  dotnet run --project base-mod/src/AiGameModStudio.SpecProbe -- <asset-spec.json>");
+    Console.Error.WriteLine("  dotnet run --project base-mod/src/AiGameModStudio.SpecProbe -- --data-dir <directory>");
+    Console.Error.WriteLine("  dotnet run --project base-mod/src/AiGameModStudio.SpecProbe -- --default-data-dir");
     return 64;
 }
 

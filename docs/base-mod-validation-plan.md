@@ -36,6 +36,21 @@ dotnet run --project base-mod/src/AiGameModStudio.SpecProbe -- examples/asset-sp
 3. 输出包含 `module_instances`
 4. 输出中的实例数量等于示例配置中模块数量总和
 
+验证外部运行时目录：
+
+```bash
+mkdir -p /tmp/ai-game-mod-studio
+cp examples/asset-specs/minimal-harbor-station.json /tmp/ai-game-mod-studio/active-asset.json
+dotnet run --project base-mod/src/AiGameModStudio.SpecProbe -- --data-dir /tmp/ai-game-mod-studio
+```
+
+成功标准：
+
+1. 进程返回 `0`
+2. 输出 `state` 为 `Loaded`
+3. 目录下生成 `runtime-status.log`
+4. 目录下生成 `runtime-status.json`
+
 ## 游戏内验证步骤
 
 1. 在 `Cities: Skylines II` 中安装官方 Code Mod 工具链
@@ -53,12 +68,20 @@ dotnet run --project base-mod/src/AiGameModStudio.SpecProbe -- examples/asset-sp
 <LocalApplicationData>/Colossal Order/Cities Skylines II/ModsData/AiGameModStudio/active-asset.json
 ```
 
+运行时状态文件：
+
+```text
+<LocalApplicationData>/Colossal Order/Cities Skylines II/ModsData/AiGameModStudio/runtime-status.log
+<LocalApplicationData>/Colossal Order/Cities Skylines II/ModsData/AiGameModStudio/runtime-status.json
+```
+
 首轮游戏内成功标准：
 
 1. Mod 能加载
 2. 日志显示找到了 `active-asset.json`
 3. 日志显示配置校验通过
 4. 日志显示生成了站点 runtime plan
+5. 修改或替换 `active-asset.json` 后，日志显示触发热重载
 
 这一轮不要求真的生成可见车站。可见实例化是下一轮。
 

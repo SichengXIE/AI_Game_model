@@ -38,6 +38,21 @@ Expected result:
 - no validation errors
 - JSON output containing `module_instances`
 
+The probe can also validate the same external data directory used by the runtime:
+
+```bash
+mkdir -p /tmp/ai-game-mod-studio
+cp examples/asset-specs/minimal-harbor-station.json /tmp/ai-game-mod-studio/active-asset.json
+dotnet run --project base-mod/src/AiGameModStudio.SpecProbe -- --data-dir /tmp/ai-game-mod-studio
+```
+
+This writes runtime status files next to `active-asset.json`:
+
+```text
+runtime-status.log
+runtime-status.json
+```
+
 ## CS2 Integration
 
 The actual in-game runtime must be created from the official Cities: Skylines II code-mod template. After that template exists, copy the adapter files from:
@@ -51,6 +66,15 @@ The adapter currently loads this file:
 ```text
 <LocalApplicationData>/Colossal Order/Cities Skylines II/ModsData/AiGameModStudio/active-asset.json
 ```
+
+The same folder also receives:
+
+```text
+runtime-status.log
+runtime-status.json
+```
+
+`runtime-status.log` is append-only JSONL for debugging. `runtime-status.json` is the latest load snapshot for UI, local app, or support tooling.
 
 ## Important Boundary
 
